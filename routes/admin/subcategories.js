@@ -19,6 +19,7 @@ router.get('/',(req,res)=>{
 });
 
 router.post('/create',(req,res)=>{
+	console.log("in sub ctaegory",req.body)
 	SubCategory.findOne({name:req.body.name}).then(subcategory=>{
 		if(subcategory==null){
 
@@ -27,7 +28,8 @@ router.post('/create',(req,res)=>{
 				cloudinary.uploader.upload(req.files.image.tempFilePath,{quality:"auto",format:"png"}).then(result=>{
 					const subcategory = new SubCategory({
 						name: req.body.name,
-						image:result.secure_url
+						image:result.secure_url,
+						category: req.body.category
 					});
 					subcategory.save().then(savedSubcategory =>{
 						req.flash('success_message', 'subcategory created !');
@@ -42,7 +44,8 @@ router.post('/create',(req,res)=>{
 			}else{
 
 				const subcategory = new SubCategory({
-					name: req.body.name
+					name: req.body.name,
+					category: req.body.category
 				});
 				subcategory.save().then(savedSubcategory =>{
 					req.flash('success_message', 'subcategory created !');

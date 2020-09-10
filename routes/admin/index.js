@@ -6,9 +6,11 @@ const Comment = require('../../models/Comment');
 const Homepage = require('../../models/Homepage');
 const {userAuthenticated} = require('../../helpers/authentication');
 const cloudinary=require('../../config/cloudinary').cloud;
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const {adminAuthenticated} = require('../../helpers/authentication')
 
-
-router.all('/*', userAuthenticated,(req,res,next)=>{
+router.all('/*',adminAuthenticated,(req,res,next)=>{
 	req.app.locals.layout = 'admin';
 	next();
 });
@@ -24,8 +26,10 @@ router.get('/',(req,res)=>{
 	//Promise.all(promises).then(([postCount, categoryCount, commentCount])=>{
 		//res.render('admin/index',{postCount:postCount, categoryCount:categoryCount, commentCount:commentCount});
 	//});
-
-	res.render('admin/index');	
+		console.log("in admin")
+		res.render('admin/index');
+	
+		
 });
 
 router.get('/dashboard',(req,res)=>{

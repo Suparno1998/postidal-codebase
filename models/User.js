@@ -22,9 +22,6 @@ const UserSchema = new Schema({
     city:{
         type:String
     },
-    zip:{
-        type:Number,
-    },
     country:{
         type:String
     },
@@ -42,6 +39,9 @@ const UserSchema = new Schema({
         default:0
     },
     token:{
+        type:String
+    },
+    department:{
         type:String
     }
    

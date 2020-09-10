@@ -92,6 +92,23 @@ router.get('/my-account',async (req,res)=>{
 	res.render('home/my-account',{metaData,headerCategories});
 });
 
+router.get('/admin-account',async (req,res)=>{
+    if(req.session.isAdmin){
+        return res.redirect('/');
+    }
+    const headerCategories=await Category.aggregate([
+        {$lookup:{from:"subcategories",localField:"_id",foreignField:"category",as:"subcat"}},
+        {$project: {name: 1, image: 1, slug: 1, sequence: 1, category: 1, subcat: 1, sequence: {$ifNull: ["$sequence", Number.MAX_VALUE]}}},
+        {$sort: {sequence: 1, created_at: -1}}
+    ]);
+    let metaData=[];
+    metaData.title="Postidal Admin Sign In";
+    metaData.keywords="shopping,ecommerce platform,ecommerce store,ecommerce multi vendor,marketplace multi vendor,seller marketplace";
+    metaData.description="Hello Welcome to Your Postidal Log In. Use your email or username, or continue ...";
+	res.render('home/admin-account',{metaData,headerCategories});
+});
+
+
 router.get('/dashboard',async (req,res)=>{
     if(!res.locals.user){
         //return res.redirect('/my-account');
@@ -767,6 +784,20 @@ router.post('/login', (req, res, next)=>{
     })(req, res, next);
 });
 
+router.post('/admin-login', (req, res, next)=>{
+    let successRedirect='/admin';
+    console.log("successRedirect",req.session.redirectUrl)
+    if(req.session.redirectUrl && req.session.redirectUrl!=null){
+     successRedirect=req.session.redirectUrl;
+     req.session.redirectUrl=null;
+    }
+    passport.authenticate('local', {
+        successRedirect: successRedirect,
+        failureRedirect: '/admin-account'
+    })(req, res, next);
+});
+
+
 router.get('/logout', (req, res)=>{
     req.logOut();
     res.redirect('/my-account');
@@ -841,6 +872,71 @@ router.post('/register', (req, res)=>{
             res.redirect('/my-account');
         }
     });
+});
+
+router.post('/admin-register', (req, res)=>{
+    console.log('body--',req.body)
+    if(req.body.email.includes('@postidal.com')){
+        User.findOne({email: req.body.email}).then(user=>{
+            if(!user){
+                const newUser = new User({
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
+                    email: req.body.email,
+                    password: req.body.password,
+                    verified: 0,
+                    department:req.body.department
+                });
+                bcrypt.genSalt(10, (err, salt)=>{
+                    bcrypt.hash(newUser.password, salt, (err, hash)=>{
+                        newUser.password = hash;
+                        newUser.save().then(savedUser=>{
+                            const base_url=res.locals.config.base_url;
+                            const url=base_url+"/verify?user_id="+savedUser._id;
+                            const emailBody=`Hi ${savedUser.first_name},
+                            <br><br>
+                            Thanks for choosing us. It is truly appreciated. Please confirm your email address to start using Postidal.
+                            <br><br>
+                            <a href="${url}">Click here to confirm</a>
+                            <br><br>
+                            Best regard,
+                            <br>
+                            <a href="https://postidal.com">Postidal.com</a>`;
+                            var mailOptions = {
+                                from: 'support@postidal.com',
+                                to: savedUser.email,
+                                subject: 'Postidal Email Confirmation',
+                                html: emailBody
+                            };
+                            
+                            transporter.sendMail(mailOptions, function(error, info){
+                                if (error) {
+                                console.log(error);
+                                req.flash('error_message', 'Some error occured !');
+                                } else {
+                                console.log('Email sent: ' + info.response);
+                                    req.flash('success_message', 'A verification mail has been sent in your email asdress , please verify it to login as an admin');
+                                }
+                                res.redirect('/');
+                            });
+                        }).catch(err=>{
+                            console.log('err',err);
+                            req.flash('error_message', 'Some error occured !');
+                            return res.redirect('/admin-account');
+                        });
+                    })
+                });
+            } else {
+                req.flash('error_message', 'That email already exists, please login !');
+                res.redirect('/admin-account');
+            }
+        });
+    }
+    else{
+        req.flash('error_message', 'Email must have domain "@postidal.com"');
+        res.redirect('/admin-account');
+    }
+    
 });
 
 router.post('/save_profile', (req, res)=>{
