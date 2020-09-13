@@ -5,6 +5,7 @@ const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const Handlebars = require('handlebars')
 const upload = require('express-fileupload');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -16,6 +17,7 @@ const redis=require("redis");
 let headerCategories=[];
 let menuCategories=[];
 
+
 mongoose.Promise = global.Promise;
 app.use(compression());
 app.use(express.static(path.join(__dirname,'public')));
@@ -26,7 +28,10 @@ const {select, generateTime, paginate, gt, ne, multiply, add, subtract, divide, 
 
 app.engine ('handlebars',exphbs({defaultLayout:'home', helpers: {select,generateTime,paginate,gt,ne,multiply,add,subtract,divide,eq,contains,or,and}}));
 app.set('view engine','handlebars');
-
+Handlebars.registerHelper('asciim', function(text) {
+	const result = Handlebars.Utils.escapeExpression(text);
+	return new Handlebars.SafeString(result);
+});
 //upload middleware
 app.use(upload({
     useTempFiles : true,

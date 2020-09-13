@@ -1,52 +1,78 @@
+<!-- Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a new address</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/add-address" method="POST">
+            <input type="hidden" name="id" value={{user.id}}>
+            <label for="addr"><h4>Address</h4></label>
+            <textarea name="add" id="addr" cols="10" rows="2" class="form-control mx-2 mb-2" placeholder="Enter Your Address" required></textarea>
+            <label for ="zip" class="mt-3"><h4>Zip Code</h4></label>
+            <input type="number" name="zip" id="zip" class="form-control mb-2 mx-2" placeholder="Enter your zipcode" required>
+            <label for="phn" class="mt-3"><h4>Phone Number</h4></label> 
+            <input type="text" name="phn" id="phn" class="form-control mb-3 mx-2" placeholder="Enter phone number" required>
+            <button class="btn btn-lg btn-success" type="submit" style="font-size:1.4rem;width:40%;float:right"><i class="fa fa-check"></i> Save Address</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit the address</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/edit-address" method="POST">
+            <input type="hidden" name="id" value={{user.id}}>
+            <input type="hidden" name="addrid" id="addrid">
+            <label for="editddr"><h4>Address</h4></label>
+            <textarea name="add" id="editaddr" cols="10" rows="2" class="form-control mx-2 mb-2" placeholder="Enter Your Address" required></textarea>
+            <label for ="editzip" class="mt-3"><h4>Zip Code</h4></label>
+            <input type="number" name="zip" id="editzip" class="form-control mb-2 mx-2" placeholder="Enter your zipcode" required>
+            <label for="editphn" class="mt-3"><h4>Phone Number</h4></label> 
+            <input type="text" name="phn" id="editphn" class="form-control mb-3 mx-2" placeholder="Enter phone number" required>
+            <button class="btn btn-lg btn-success p-1" type="submit" style="font-size:1.4rem;width:40%;float:right"><i class="fa fa-check"></i> Save the changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="container">
     <div class="row">
     	<div class="col-sm-12">
           <div class="tab-content">
             <div class="tab-pane active" id="home">
-                <hr>
-                  <form class="form" action="/save_profile" method="post" id="registrationForm">
-                        <input type="hidden" name="user_id" value="{{user._id}}">
-                      <div class="row">
-
-                          <div class="col-md-6">
-
-                              <div class="form-group">
-                          
-                                <div class="col-xs-6">
-                                    <label for="first_name"><h4>First name</h4></label>
-                                    <input type="text" class="form-control" name="first_name" id="first_name" placeholder="first name" title="enter your first name" required value="{{user.first_name}}">
+            <hr>
+                <form class="form" action="/save_profile" method="post" id="registrationForm">
+                    <input type="hidden" name="user_id" value="{{user._id}}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-xs-6">
+                                        <label for="first_name"><h4>Name</h4></label>
+                                        <input type="text" class="form-control" name="name" id="name" placeholder="Name" title="enter your name" required value="{{user.name}}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-6">
+                                        <label for="phone"><h4>Phone</h4></label>
+                                        <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone" title="enter your phone number"  required value="{{user.acc_phone}}">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                
-                                <div class="col-xs-6">
-                                    <label for="last_name"><h4>Last name</h4></label>
-                                    <input type="text" class="form-control" name="last_name" id="last_name" placeholder="last name" title="enter your last name" required value="{{user.last_name}}">
-                                </div>
-                            </div>
-                
-                            <div class="form-group">
-                                
-                                <div class="col-xs-6">
-                                    <label for="phone"><h4>Phone</h4></label>
-                                    <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone" title="enter your phone number"  required value="{{user.phone}}">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                
-                                <div class="col-xs-6">
-                                    <label for="address"><h4>Address</h4></label>
-                                    <input type="text" class="form-control" name="address" id="address" placeholder="enter address" title="enter your address"  required value="{{user.address}}">
-                                </div>
-                            </div>
-
-                          </div>
-
-                          <div class="col-md-6">
-
-                              <div class="form-group">
-                          
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <div class="col-xs-6">
                                         <label for="email"><h4>Email</h4></label>
                                         <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" title="enter your email" required value="{{user.email}}">
@@ -75,43 +101,125 @@
                                         </label>
                                     {{/if}}
                                 </div>
-
-                                <div class="form-group">
-                          
-                                    <div class="col-xs-6">
-                                        <label for="city"><h4>City</h4></label>
-                                        <input type="text" class="form-control" name="city" id="city" placeholder="City" required value="{{user.city}}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-xs-6">
-                                        <label for="country"><h4>Country</h4></label>
-                                        <input type="text" class="form-control" name="country" id="country" placeholder="Country" required value="{{user.country}}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-xs-6">
-                                        <label for="country"><h4>Zip Code</h4></label>
-                                        <input type="text" class="form-control" name="zip" id="zip" placeholder="Zip Code" required value="{{user.zip}}">
-                                    </div>
-                                </div>
-                          </div>
-
-                      </div>
-                      
-                      <div class="form-group text-center">
-                           <div class="col-xs-12">
+                            </div>
+                        </div>
+                       <div class="row">
+                            <div class="col-md-12 d-flex justify-content-between my-2">
+                                <strong class="mr-2" style="font-size: 20px;">Your Addresses</strong>
+                                <button type="button" class="button-amz mx-5" data-toggle="modal" data-target="#addModal">Add new address</button>
+                            </div>
+                        </div>
+                        <div class="row p-1 d- flex flex-row" id="address-container">
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12 d-flex justify-content-between my-2">
+                                <strong class="mr-2" style="font-size: 20px;">Your Credit Cards</strong>
+                                <button class="button-amz mx-5">Add new cards</button>
+                            </div>
+                        </div>
+                        <div class="row p-2 d-flex justify-content-around" id="card-container">
+                        </div>
+                        <div class="form-group text-center">
+                            <div class="col-xs-12">
                               	<button class="btn btn-lg btn-success" type="submit" style="font-size:1.4rem;width:20%;"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
                             </div>
-                      </div>
-              	</form>
-              
-              <hr>
-              
-             </div>
-               
-              </div>
-          </div>
-
+                        </div>
+              	    </form>
+                    <hr>
+                </div> 
+            </div>
         </div>
     </div>
+</div>
+<script>
+    data= null
+    const id = `{{user.id}}`
+    function edit(id,address,pin,phone){
+        document.getElementById('addrid').value = id
+        document.getElementById('editaddr').value = address
+        document.getElementById('editzip').value = pin
+        document.getElementById('editphn').value = phone
+        $("#editModal").modal()
+    }
+    $.ajax({
+         method:"post",
+         url:"/address",
+         data:{"id" : id}
+    }).done(response => {
+        const data = response
+        const holder = document.getElementById('address-container')
+        for(var item in data)
+        {
+            var element = `<div class="col-md-3 col-xs-5 my-2 text-left address p-3 mr-2" id="${item}">
+                        ${data[item].add}
+                        <br>Zip Code : ${data[item].pin}<br>
+                        Phone : ${data[item].phn}<br>
+                        <div class="d-flex justify-content-between mt-2">
+                        <button type="button" class="addr-button p-2" onclick="edit('${data[item].id}','${data[item].add}','${data[item].pin}','${data[item].phn}')">Edit</button>
+                        <a type="button" class="addr-button p-2" href="/delete-address?id=${id}&idx=${data[item].id}">Delete</a>
+                    </div>`
+            holder.innerHTML = holder.innerHTML+element
+        }
+    })
+    /*
+        for(var r in data){
+            if(r % 2 == 0){
+                var temp = data[r]+"}"
+                data[r] = temp
+            }
+            else{
+                var temp = "{"+data[r]
+                data[r]  = temp
+            }
+            console.log(data[r])
+            data[r] = data[r].replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+            data[r] = JSON.parse(data[r])
+            console.log(data[r])
+        }
+        const holder = document.getElementById('address-container')
+        for(var item in data){
+            var element = `<div class="col-md-3 col-xs-7 my-2 text-left address p-3 mr-2" id="${item}">
+                        ${data[item].add}
+                        <br>Zip Code : ${data[item].pin}<br>
+                        Phone : ${data[item].phn}<br>
+                        <div class="d-flex justify-content-between mt-2">
+                        <button type="button" class="addr-button" onclick="edit(${data[item].id})">Edit</button>
+                        <button type="button" class="addr-button" onclick="del(${data[item].id})">Delete</button>
+                    </div>`
+            holder.innerHTML = holder.innerHTML+element
+            */
+</script>
+<style>
+    .address{
+        background-color: beige;
+        border:1px solid black;
+        border-radius :3%;
+    }
+    .addr-button{
+        border-radius:5%;
+        border:1px solid beige;
+        background-color: lightgrey;
+        font-size:15px;
+        font-weight:500;
+        border-radius: 5px;
+    }
+    .addr-button:hover{
+        border:1px solid #ff9900;
+        background-color: #ff9900;
+        font-size:15px;
+    }
+    .button-amz{
+        height: 40px !important;
+        padding-left:8px;
+        padding-right:8px;
+        border-radius: 4px;
+        border: 0px;
+        background-color: rgb(189, 195, 199);
+        font-family: Ubuntu, sans-serif;
+        font-size: 15px;
+        font-weight: 200;
+    }
+    .button-amz:hover{
+        background-color: beige;
+    }
+</style>

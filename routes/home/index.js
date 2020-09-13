@@ -45,6 +45,112 @@ router.post('/update',async (req,res)=>{
     const x = await User.updateOne({_id : id},{$set:{phone : phone,address:address, country : country, city : city,zip: zip}})
     console.log(x)
 })
+router.post('/address',async (req,res) => {
+    const id = req.body.id
+    //console.log(id)
+    const user = await User.findById(id)
+    if(user == null){
+        res.render('errors/404',{error_page:Math.ceil(Math.random()*2)})
+    }
+    res.send(user.addresses)
+})
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    }
+    return result;
+ }
+router.post('/add-address',async(req,res)=>{
+    if(!res.locals.user){
+        res.redirect('/')
+    }
+    const id = req.body.id
+    const idx = makeid(5)
+    const add = req.body.add
+    const zip = req.body.zip
+    const phn = req.body.phn
+    const newObj = {
+        id : idx,
+        add : add,
+        pin : zip,
+        phn : phn
+    }
+    const x = await User.updateOne({_id : id},{$push : {addresses : newObj}})
+    console.log(x)
+    const headerCategories=await Category.aggregate([
+        {$lookup:{from:"subcategories",localField:"_id",foreignField:"category",as:"subcat"}},
+        {$project: {name: 1, image: 1, slug: 1, sequence: 1, category: 1, subcat: 1, sequence: {$ifNull: ["$sequence", Number.MAX_VALUE]}}},
+        {$sort: {sequence: 1, created_at: -1}}
+    ])
+    let metaData=[];
+    metaData.title="User Profile";
+    metaData.keywords="shopping,ecommerce platform,ecommerce store,ecommerce multi vendor,marketplace multi vendor,seller marketplace";
+    metaData.description="Hello Welcome to Your Profile";
+	res.render('home/profile',{metaData,headerCategories,});
+})
+router.post('/edit-address',async (req,res)=> {
+    if(!res.locals.user){
+        res.redirect('/my-account')
+    }
+    const us = await User.findById(req.body.id)
+    const addresses = us.addresses
+    const newAddress = {
+        id : req.body.addrid,
+        add : req.body.add,
+        pin : req.body.zip,
+        phn : req.body.phn
+    }
+    var idx = addresses.findIndex(obj => obj.id == req.body.addrid)
+    console.log(idx)
+    addresses[idx] = newAddress
+    var x = await User.updateOne({_id : req.body.id},{$set : {addresses : addresses}})
+    console.log(x)
+    const headerCategories=await Category.aggregate([
+        {$lookup:{from:"subcategories",localField:"_id",foreignField:"category",as:"subcat"}},
+        {$project: {name: 1, image: 1, slug: 1, sequence: 1, category: 1, subcat: 1, sequence: {$ifNull: ["$sequence", Number.MAX_VALUE]}}},
+        {$sort: {sequence: 1, created_at: -1}}
+    ])
+    let metaData=[];
+    metaData.title="User Profile";
+    metaData.keywords="shopping,ecommerce platform,ecommerce store,ecommerce multi vendor,marketplace multi vendor,seller marketplace";
+    metaData.description="Hello Welcome to Your Profile";
+	res.render('home/profile',{metaData,headerCategories,});
+})
+router.get('/delete-address',async (req,res)=>{
+    if(!res.locals.user){
+        res.redirect('/')
+    }
+    const id = req.query.id
+    const index = req.query.idx
+    const user = await User.findById(id)
+    var addresses = user.addresses
+    if(addresses.length == 1){
+        
+        const x = await User.updateOne({_id : id},{$set : {addresses : []}})
+        console.log(x)
+    }
+    else if (addresses.length > 1)
+    {
+        addresses = addresses.filter((e) => { return e.id !== index})
+        const x = await User.updateOne({_id : id},{$set : {addresses :addresses}})
+        console.log(x)
+    }
+    const headerCategories=await Category.aggregate([
+        {$lookup:{from:"subcategories",localField:"_id",foreignField:"category",as:"subcat"}},
+        {$project: {name: 1, image: 1, slug: 1, sequence: 1, category: 1, subcat: 1, sequence: {$ifNull: ["$sequence", Number.MAX_VALUE]}}},
+        {$sort: {sequence: 1, created_at: -1}}
+    ])
+    let metaData=[];
+    metaData.title="User Profile";
+    metaData.keywords="shopping,ecommerce platform,ecommerce store,ecommerce multi vendor,marketplace multi vendor,seller marketplace";
+    metaData.description="Hello Welcome to Your Profile";
+	res.render('home/profile',{metaData,headerCategories,});
+    //const x = await User.findOneAndUpdate({"_id" : id},{$set : {"addresses" : currAddress}})
+    //console.log(x)
+})
 router.get('/', async (req, res)=>{
     const headerCategories=await Category.aggregate([
             {$lookup:{from:"subcategories",localField:"_id",foreignField:"category",as:"subcat"}},
@@ -139,6 +245,8 @@ router.get('/my-profile',async (req,res)=>{
     metaData.title="User Profile";
     metaData.keywords="shopping,ecommerce platform,ecommerce store,ecommerce multi vendor,marketplace multi vendor,seller marketplace";
     metaData.description="Hello Welcome to Your Profile";
+    res.locals["x"] = res.locals.user.addresses
+
 	res.render('home/profile',{metaData,headerCategories});
 
 });

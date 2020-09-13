@@ -72,28 +72,34 @@
                                 <a href="{{config.root}}my-profile" data-toggle="dropdown" class="drop">My Account</a>
                                 <div class="dropdown-menu text-center">
                                     {{#if user}}
-                                    <p class="dropdown-header" class="menu-head" style="font-size:medium;color:black;font-weight:500" id="menu-greet">Hi {{user.first_name}}</p>
-                                    <a class="dropdown-item menu-item" class="" href="#" >Shopping Cart</a>
-                                    <a class="dropdown-item menu-item">Orders &amp; Returns</a>
-                                    <a class="dropdown-item menu-item">Todays deals</a>
+                                    <p class="dropdown-header" class="menu-head" style="font-size:medium;color:black;font-weight:500" id="menu-greet"></p>
+                                    <a class="dropdown-item menu-item" href="{{config.root}}cart" >Shopping Cart</a>
+                                    <a class="dropdown-item menu-item"  href="{{config.root}}my-orders">Orders &amp; Returns</a>
+                                    <a class="dropdown-item menu-item" >Todays deals</a>
                                     <a class="dropdown-item menu-item" href='{{config.root}}logout'>Logout</a>
                                     <p class="dropdown-header" class="menu-head" style="font-size:medium;color:black;font-weight:500">My Postidal</p>
-                                    <a class="dropdown-item menu-item">My Account</a>
+                                    <a class="dropdown-item menu-item" href="{{config.root}}my-profile">My Account</a>
                                     <a class="dropdown-item menu-item">Apply Promo</a>
                                     <a class="dropdown-item menu-item">Settings</a>
-                                    <a class="dropdown-item menu-item">Help</a>
+                                    <a class="dropdown-item menu-item" href="{{config.root}}contact-us">Help</a>
                                     {{else}}
                                     <a class="btn btn-warning button" href="{{config.root}}my-account" >Sign in/Sign Up</a>
-                                    <a class="dropdown-item menu-item">Shopping Cart</a>
-                                    <a class="dropdown-item menu-item">Orders &amp; Returns</a>
-                                    <a class="dropdown-item menu-item">Todays deals</a>
+                                    <a class="dropdown-item menu-item" href="{{config.root}}cart" >Shopping Cart</a>
+                                    <a class="dropdown-item menu-item"  href="{{config.root}}my-orders">Orders &amp; Returns</a>
+                                    <a class="dropdown-item menu-item" >Todays deals</a>
                                     <p class="dropdown-header" class="menu-head" style="font-size:medium;color:black;font-weight:500">My Postidal</p>
-                                    <a class="dropdown-item menu-item">My Account</a>
+                                    <a class="dropdown-item menu-item" href="{{config.root}}my-profile">My Account</a>
                                     <a class="dropdown-item menu-item">Apply Promo</a>
                                     <a class="dropdown-item menu-item">Settings</a>
-                                    <a class="dropdown-item menu-item">Help</a>
+                                    <a class="dropdown-item menu-item" href="{{config.root}}contact-us">Help</a>
                                     {{/if}}
                                 </div>
+                                <script>
+                                    const x = document.getElementById('menu-greet')
+                                    if(x != undefined || x != null){
+                                        x.innerText = "Hi "+ "{{user.name}}".split(" ")[0]
+                                    }
+                                </script>
                             </div>
                         </div>
                         <a href="#" class="menu-item-large">Returns &amp; Orders</a>
@@ -209,8 +215,8 @@
             </form>
         </div>
         <div class="submenu">
-            <a class="l1"> Categories</span></a>
-            <a class="l2"> Buy Again</span></a>
+            <a class="l1" href="{{config.root}}shop/categories"> Categories</span></a>
+            <a class="l2" href="{{config.root}}my-orders"> Buy Again</span></a>
             <a class="l3">1$ Deals</a>
             <a class="l4">Gold Member</a>
             <span class="stretch"></span>
@@ -434,7 +440,7 @@
                 {{/if}}
                 <li class="current-menu-item borderBottom"><a href="{{config.root}}login"><i class="fa fa-gift"></i> <span>Login Rewards</span></a></li>
                 <h4 class="itemHeading">My Postidal</h4>
-               <li class="current-menu-item"><a  href="{{config.root}}cart"><i class="fa fa-users"></i> <span>My Account</span></a></li>
+               <li class="current-menu-item"><a  href="{{config.root}}my-profile"><i class="fa fa-users"></i> <span>My Account</span></a></li>
                 {{#if user}}
                 <li class="current-menu-item"><a href="{{config.root}}my-orders"><i class="fa fa-history"></i> <span>Order History</span></a></li>
                 <li class="current-menu-item"><a href="{{config.root}}my-profile"><i class="fa fa-address-card-o"></i> <span>Shipping Address</span></a></li>
@@ -523,7 +529,8 @@
         }
     </style>
 <script>
-    let user_name="{{user.first_name}}";
+    let name = "{{user.name}}"
+    let user_name=name.split(" ")[0];
     let greetings="";
     if(user_name){
         let today = new Date();

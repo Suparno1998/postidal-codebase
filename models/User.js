@@ -3,11 +3,7 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
     
-    first_name:{
-        type:String,
-        required:true
-    },
-    last_name:{
+    name:{
         type:String,
         required:true
     },
@@ -19,9 +15,6 @@ const UserSchema = new Schema({
         type:String,
         required:true
     },
-    city:{
-        type:String
-    },
     country:{
         type:String
     },
@@ -31,8 +24,8 @@ const UserSchema = new Schema({
     phone:{
         type:String
     },
-    address:{
-        type:String
+    addresses:{
+        type : Object
     },
     verified:{
         type:Number,
