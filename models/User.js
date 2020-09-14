@@ -27,6 +27,13 @@ const UserSchema = new Schema({
     addresses:{
         type : Object
     },
+    cards : [
+        {
+            number : String,
+            name : String,
+            expdate : String
+        }
+    ],
     verified:{
         type:Number,
         default:0

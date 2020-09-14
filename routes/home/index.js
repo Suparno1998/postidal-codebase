@@ -45,15 +45,6 @@ router.post('/update',async (req,res)=>{
     const x = await User.updateOne({_id : id},{$set:{phone : phone,address:address, country : country, city : city,zip: zip}})
     console.log(x)
 })
-router.post('/address',async (req,res) => {
-    const id = req.body.id
-    //console.log(id)
-    const user = await User.findById(id)
-    if(user == null){
-        res.render('errors/404',{error_page:Math.ceil(Math.random()*2)})
-    }
-    res.send(user.addresses)
-})
 function makeid(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -63,10 +54,16 @@ function makeid(length) {
     }
     return result;
  }
-router.post('/add-address',async(req,res)=>{
-    if(!res.locals.user){
-        res.redirect('/')
+router.post('/address',async (req,res) => {
+    const id = req.body.id
+    //console.log(id)
+    const user = await User.findById(id)
+    if(user == null){
+        res.render('errors/404',{error_page:Math.ceil(Math.random()*2)})
     }
+    res.send(user.addresses)
+})
+router.post('/add-address',async(req,res)=>{
     const id = req.body.id
     const idx = makeid(5)
     const add = req.body.add
@@ -92,9 +89,6 @@ router.post('/add-address',async(req,res)=>{
 	res.render('home/profile',{metaData,headerCategories,});
 })
 router.post('/edit-address',async (req,res)=> {
-    if(!res.locals.user){
-        res.redirect('/my-account')
-    }
     const us = await User.findById(req.body.id)
     const addresses = us.addresses
     const newAddress = {
@@ -120,9 +114,6 @@ router.post('/edit-address',async (req,res)=> {
 	res.render('home/profile',{metaData,headerCategories,});
 })
 router.get('/delete-address',async (req,res)=>{
-    if(!res.locals.user){
-        res.redirect('/')
-    }
     const id = req.query.id
     const index = req.query.idx
     const user = await User.findById(id)
@@ -136,6 +127,95 @@ router.get('/delete-address',async (req,res)=>{
     {
         addresses = addresses.filter((e) => { return e.id !== index})
         const x = await User.updateOne({_id : id},{$set : {addresses :addresses}})
+        console.log(x)
+    }
+    const headerCategories=await Category.aggregate([
+        {$lookup:{from:"subcategories",localField:"_id",foreignField:"category",as:"subcat"}},
+        {$project: {name: 1, image: 1, slug: 1, sequence: 1, category: 1, subcat: 1, sequence: {$ifNull: ["$sequence", Number.MAX_VALUE]}}},
+        {$sort: {sequence: 1, created_at: -1}}
+    ])
+    let metaData=[];
+    metaData.title="User Profile";
+    metaData.keywords="shopping,ecommerce platform,ecommerce store,ecommerce multi vendor,marketplace multi vendor,seller marketplace";
+    metaData.description="Hello Welcome to Your Profile";
+	res.render('home/profile',{metaData,headerCategories,});
+    //const x = await User.findOneAndUpdate({"_id" : id},{$set : {"addresses" : currAddress}})
+    //console.log(x)
+})
+
+router.post('/card',async (req,res) => {
+    const id = req.body.id
+    //console.log(id)
+    const user = await User.findById(id)
+    if(user == null){
+        res.render('errors/404',{error_page:Math.ceil(Math.random()*2)})
+    }
+    res.send(user.cards)
+})
+
+router.post('/add-card',async(req,res)=>{
+    const id = req.body.id
+    const number = req.body.number
+    const name = req.body.name
+    const expdate = req.body.expdate
+    const newObj = {
+        number : number,
+        name : name,
+        expdate : expdate
+    }
+    const x = await User.updateOne({_id : id},{$push : {cards : newObj}})
+    console.log(x)
+    const headerCategories=await Category.aggregate([
+        {$lookup:{from:"subcategories",localField:"_id",foreignField:"category",as:"subcat"}},
+        {$project: {name: 1, image: 1, slug: 1, sequence: 1, category: 1, subcat: 1, sequence: {$ifNull: ["$sequence", Number.MAX_VALUE]}}},
+        {$sort: {sequence: 1, created_at: -1}}
+    ])
+    let metaData=[];
+    metaData.title="User Profile";
+    metaData.keywords="shopping,ecommerce platform,ecommerce store,ecommerce multi vendor,marketplace multi vendor,seller marketplace";
+    metaData.description="Hello Welcome to Your Profile";
+	res.render('home/profile',{metaData,headerCategories,});
+})
+
+router.post('/edit-card',async (req,res)=> {
+    const us = await User.findById(req.body.id)
+    const cards = us.cards
+    const newCard = {
+        number : req.body.number,
+        name : req.body.name,
+        expdate : req.body.expdate
+    }
+    var idx = cards.findIndex(obj => obj.number == req.body.number)
+    console.log(idx)
+    cards[idx] = newCard
+    var x = await User.updateOne({_id : req.body.id},{$set : {cards : cards}})
+    console.log(x)
+    const headerCategories=await Category.aggregate([
+        {$lookup:{from:"subcategories",localField:"_id",foreignField:"category",as:"subcat"}},
+        {$project: {name: 1, image: 1, slug: 1, sequence: 1, category: 1, subcat: 1, sequence: {$ifNull: ["$sequence", Number.MAX_VALUE]}}},
+        {$sort: {sequence: 1, created_at: -1}}
+    ])
+    let metaData=[];
+    metaData.title="User Profile";
+    metaData.keywords="shopping,ecommerce platform,ecommerce store,ecommerce multi vendor,marketplace multi vendor,seller marketplace";
+    metaData.description="Hello Welcome to Your Profile";
+	res.render('home/profile',{metaData,headerCategories,});
+})
+
+router.get('/delete-card',async (req,res)=>{
+    const id = req.query.id
+    const number = req.query.number
+    const user = await User.findById(id)
+    var cards = user.cards
+    if(cards.length == 1){
+        
+        const x = await User.updateOne({_id : id},{$set : {cards : []}})
+        console.log(x)
+    }
+    else if (cards.length > 1)
+    {
+        cards = cards.filter((e) => { return e.number !== number})
+        const x = await User.updateOne({_id : id},{$set : {cards :cards}})
         console.log(x)
     }
     const headerCategories=await Category.aggregate([

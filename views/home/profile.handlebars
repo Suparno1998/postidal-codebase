@@ -1,5 +1,5 @@
-<!-- Modal -->
-<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!--add-address-modal -->
+<div class="modal fade" id="add-address-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -23,7 +23,8 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!--edit-address-modal -->
+<div class="modal fade" id="edit-address-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -42,6 +43,58 @@
             <input type="number" name="zip" id="editzip" class="form-control mb-2 mx-2" placeholder="Enter your zipcode" required>
             <label for="editphn" class="mt-3"><h4>Phone Number</h4></label> 
             <input type="text" name="phn" id="editphn" class="form-control mb-3 mx-2" placeholder="Enter phone number" required>
+            <button class="btn btn-lg btn-success p-1" type="submit" style="font-size:1.4rem;width:40%;float:right"><i class="fa fa-check"></i> Save the changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--add-card-modal -->
+<div class="modal fade" id="add-card-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add new card</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/add-card" method="POST">
+            <input type="hidden" name="id" value={{user.id}}>
+            <input type="hidden" name="addrid" id="addrid">
+            <label for="number"><h4>Card Number</h4></label>
+            <input type="text" name="number" id="number" class="form-control mb-2 mx-2" placeholder="Enter your card number" required>
+            <label for ="name" class="mt-3"><h4>Card holder name</h4></label>
+            <input type="text" name="name" id="name" class="form-control mb-2 mx-2" placeholder="Enter your name" required>
+            <label for="expdate" class="mt-3"><h4>Expiry Date</h4></label> 
+            <input type="text" name="expdate" id="expdate" class="form-control mb-3 mx-2" placeholder="Enter expiry date" required>
+            <button class="btn btn-lg btn-success p-1" type="submit" style="font-size:1.4rem;width:40%;float:right"><i class="fa fa-check"></i> Save the card</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--edit-card-modal -->
+<div class="modal fade" id="edit-card-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit the card</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/edit-card" method="POST">
+            <input type="hidden" name="id" value={{user.id}}>
+            <input type="hidden" name="addrid" id="addrid">
+            <label for="editnumber"><h4>Card Number</h4></label>
+            <input type="text" name="number" id="editnumber" class="form-control mb-2 mx-2" placeholder="Enter your card number" required>
+            <label for ="editname" class="mt-3"><h4>Card holder name</h4></label>
+            <input type="text" name="name" id="editname" class="form-control mb-2 mx-2" placeholder="Enter your name" required>
+            <label for="editexpdate" class="mt-3"><h4>Expiry Date</h4></label> 
+            <input type="text" name="expdate" id="editexpdate" class="form-control mb-3 mx-2" placeholder="Enter expiry date" required>
             <button class="btn btn-lg btn-success p-1" type="submit" style="font-size:1.4rem;width:40%;float:right"><i class="fa fa-check"></i> Save the changes</button>
         </form>
       </div>
@@ -106,7 +159,7 @@
                        <div class="row">
                             <div class="col-md-12 d-flex justify-content-between my-2">
                                 <strong class="mr-2" style="font-size: 20px;">Your Addresses</strong>
-                                <button type="button" class="button-amz mx-5" data-toggle="modal" data-target="#addModal">Add new address</button>
+                                <button type="button" class="button-amz mx-5" data-toggle="modal" data-target="#add-address-modal">Add new address</button>
                             </div>
                         </div>
                         <div class="row p-1 d- flex flex-row" id="address-container">
@@ -114,10 +167,10 @@
                         <div class="row my-2">
                             <div class="col-md-12 d-flex justify-content-between my-2">
                                 <strong class="mr-2" style="font-size: 20px;">Your Credit Cards</strong>
-                                <button class="button-amz mx-5">Add new cards</button>
+                                <button type="button" class="button-amz mx-5" data-toggle="modal" data-target="#add-card-modal">Add new cards</button>
                             </div>
                         </div>
-                        <div class="row p-2 d-flex justify-content-around" id="card-container">
+                        <div class="row p-2 d-flex flex flex-row" id="card-container">
                         </div>
                         <div class="form-group text-center">
                             <div class="col-xs-12">
@@ -139,7 +192,13 @@
         document.getElementById('editaddr').value = address
         document.getElementById('editzip').value = pin
         document.getElementById('editphn').value = phone
-        $("#editModal").modal()
+        $("#edit-address-modal").modal()
+    }
+    function editCard(number,name,expdate){
+        document.getElementById('editnumber').value = number
+        document.getElementById('editname').value = name
+        document.getElementById('editexpdate').value = expdate
+        $("#edit-card-modal").modal()
     }
     $.ajax({
          method:"post",
@@ -161,33 +220,27 @@
             holder.innerHTML = holder.innerHTML+element
         }
     })
-    /*
-        for(var r in data){
-            if(r % 2 == 0){
-                var temp = data[r]+"}"
-                data[r] = temp
-            }
-            else{
-                var temp = "{"+data[r]
-                data[r]  = temp
-            }
-            console.log(data[r])
-            data[r] = data[r].replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
-            data[r] = JSON.parse(data[r])
-            console.log(data[r])
-        }
-        const holder = document.getElementById('address-container')
-        for(var item in data){
-            var element = `<div class="col-md-3 col-xs-7 my-2 text-left address p-3 mr-2" id="${item}">
-                        ${data[item].add}
-                        <br>Zip Code : ${data[item].pin}<br>
-                        Phone : ${data[item].phn}<br>
+    $.ajax({
+         method:"post",
+         url:"/card",
+         data:{"id" : id}
+    }).done(response => {
+        const data = response
+        console.log(response)
+        const holder = document.getElementById('card-container')
+        for(var item in data)
+        {
+            var element = `<div class="col-md-3 col-xs-5 my-2 text-left address p-3 mr-2" id="${item}">
+                        Card Number : ${data[item].number}<br>
+                        Card Holder : ${data[item].name}<br>
+                        Expiry Date : ${data[item].expdate}<br>
                         <div class="d-flex justify-content-between mt-2">
-                        <button type="button" class="addr-button" onclick="edit(${data[item].id})">Edit</button>
-                        <button type="button" class="addr-button" onclick="del(${data[item].id})">Delete</button>
+                        <button type="button" class="addr-button p-2" onclick="editCard('${data[item].number}','${data[item].name}','${data[item].expdate}')">Edit</button>
+                        <a type="button" class="addr-button p-2" href="/delete-card?id=${id}&number=${data[item].number}">Delete</a>
                     </div>`
             holder.innerHTML = holder.innerHTML+element
-            */
+        }
+    })
 </script>
 <style>
     .address{
